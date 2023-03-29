@@ -35,7 +35,7 @@ const displayPhones = (phones, dataLimit) => {
             <div class="card-body">
                 <h5 class="card-title">${phone.phone_name}</h5>
                 <p class="card-text">This is a card for phone. Here some details about phone. This is a right phone that you choose. This is a budget friendly phone. In your budget many features are available here. So, you can buy this phone. Thank you.</p>
-                <button onclick="loadPhoneDetails('${phone.slug}')" href="#" class="btn btn-primary">Show details</button>
+                <button onclick="loadPhoneDetails('${phone.slug}')" href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#phoneDetailModal">Show details</button>
             </div>
         </div>
         `;
@@ -87,7 +87,30 @@ const loadPhoneDetails = async (id) => {
   const url = `https://openapi.programming-hero.com/api/phone/${id}`;
   const res = await fetch(url);
   const data = await res.json();
-  console.log(data.data);
+  displayPhoneDetails(data.data);
 };
 
-// loadPhones();
+const displayPhoneDetails = (phone) => {
+  console.log(phone);
+  const modalTitle = document.getElementById("phoneDetailModalLabel");
+  modalTitle.innerText = phone.name;
+  const phoneDetails = document.getElementById("phone-details");
+  phoneDetails.innerHTML = `
+    <p>Release Date: ${
+      phone.releaseDate ? phone.releaseDate : "No Release Date Found"
+    }</p>
+    <p>Storage: ${
+      phone.mainFeatures
+        ? phone.mainFeatures.storage
+        : "No storage information found"
+    }</p>
+    <p>Others: ${
+      phone.others ? phone.others.Bluetooth : "No Bluetooth information"
+    }</p>
+    <p>Sensors: ${
+      phone.mainFeatures.sensors ? phone.mainFeatures.sensors[0] : "No Sensor"
+    }</p>
+  `;
+};
+
+loadPhones("apple");
